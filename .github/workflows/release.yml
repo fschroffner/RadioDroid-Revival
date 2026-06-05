@@ -39,4 +39,5 @@ jobs:
         fi
         gh release create "$TAG" "$APK_PATH" \
           --title "RadioDroid $TAG" \
-          --generate-notes
+          --generate-notes \
+        || gh release upload "$TAG" "$APK_PATH" --clobber
