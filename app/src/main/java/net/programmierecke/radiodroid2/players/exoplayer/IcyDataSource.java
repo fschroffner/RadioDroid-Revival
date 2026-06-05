@@ -17,6 +17,7 @@ import net.programmierecke.radiodroid2.station.live.StreamLiveInfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.HttpUrl;
@@ -27,7 +28,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import static net.programmierecke.radiodroid2.Utils.getMimeType;
-import static okhttp3.internal.Util.closeQuietly;
 
 /**
  * An {@link HttpDataSource} that uses {@link OkHttpClient},
@@ -129,8 +129,8 @@ public class IcyDataSource implements HttpDataSource {
         final int responseCode = response.code();
 
         if (!response.isSuccessful()) {
-            final Map<String, List<String>> headers = request.headers().toMultimap();
-            throw new InvalidResponseCodeException(responseCode, headers, dataSpec);
+            final Map<String, List<String>> headers = response.headers().toMultimap();
+            throw new InvalidResponseCodeException(responseCode, response.message(), null, headers, dataSpec, new byte[0]);
         }
 
         responseBody = response.body();
@@ -142,7 +142,7 @@ public class IcyDataSource implements HttpDataSource {
 
         final String type = contentType == null ? getMimeType(dataSpec.uri.toString(), "audio/mpeg") : contentType.toString().toLowerCase();
 
-        if (!REJECT_PAYWALL_TYPES.apply(type)) {
+        if (!isAcceptableContentType(type)) {
             close();
             throw new InvalidContentTypeException(type, dataSpec);
         }
@@ -170,6 +170,10 @@ public class IcyDataSource implements HttpDataSource {
         }
     }
 
+    private static boolean isAcceptableContentType(String contentType) {
+        return !contentType.toLowerCase(Locale.US).startsWith("text/html");
+    }
+
     @Override
     public void close() throws HttpDataSourceException {
         if (opened) {
@@ -178,7 +182,10 @@ public class IcyDataSource implements HttpDataSource {
         }
 
         if (responseBody != null) {
-            closeQuietly(responseBody);
+            try {
+                responseBody.close();
+            } catch (Exception ignored) {
+            }
             responseBody = null;
         }
     }

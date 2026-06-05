@@ -25,28 +25,29 @@ android {
 
     flavorDimensions "one"
 
-    compileSdkVersion 34
+    compileSdk 35
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of("11"))
+            languageVersion.set(JavaLanguageVersion.of("17"))
         }
     }
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     defaultConfig {
         applicationId "net.programmierecke.radiodroid2"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdk 21
+        targetSdk 35
 
         versionCode 96
         versionName "0.86"
@@ -84,10 +85,6 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    testOptions {
-        execution 'ANDROIDX_TEST_ORCHESTRATOR'
-    }
-
     sourceSets {
         // Store flags in subfolder to not pollute drawables
         // https://antonioleiva.com/android-multiple-resource-folders/
@@ -102,10 +99,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
-            lintOptions {
-                disable 'MissingTranslation'
-            }
         }
     }
     productFlavors {
@@ -118,12 +111,14 @@ android {
     }
     lint {
         abortOnError true
+        disable 'MissingTranslation'
     }
     namespace 'net.programmierecke.radiodroid2'
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         unitTests.all {
-            useJUnit()
+            useJUnitPlatform()
         }
         animationsDisabled = true
         unitTests.returnDefaultValues = true
@@ -131,25 +126,23 @@ android {
 }
 
 ext {
-    media3Version = '1.3.1'
+    media3Version = '1.5.1'
     iconicsVersion = '4.0.2'
 }
 
 dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.mediarouter:mediarouter:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     implementation 'androidx.tvprovider:tvprovider:1.0.0'
 
-    // Keep OkHttp 3.12.X to support Android 4.X, see https://developer.squareup.com/blog/okhttp-3-13-requires-android-5
-    //noinspection GradleDependency
-    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
     //noinspection GradleDependency 2.8 is newer than 2.71828'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'jp.wasabeef:picasso-transformations:2.4.0'
@@ -165,37 +158,36 @@ dependencies {
     implementation 'com.github.zawadz88:MaterialPopupMenu:3.4.0'
     implementation 'com.github.ByteHamster:SearchPreference:v2.3.0'
 
-    implementation 'androidx.room:room-runtime:2.6.1'
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0") {
+    implementation 'androidx.room:room-runtime:2.7.1'
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1") {
         exclude group: 'org.checkerframework', module: 'checker'
     }
-    annotationProcessor 'androidx.room:room-compiler:2.6.1'
+    annotationProcessor 'androidx.room:room-compiler:2.7.1'
 
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.6.2"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.9.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0"
 
-    implementation 'androidx.paging:paging-runtime:3.2.1'
+    implementation 'androidx.paging:paging-runtime:3.3.6'
 
     playImplementation 'com.google.android.gms:play-services-cast:21.5.0'
     playImplementation 'com.google.android.gms:play-services-cast-framework:21.5.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.11.3'
 
-    androidTestImplementation 'androidx.test:core:1.5.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test:rules:1.4.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test:core:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
 
-    //noinspection GradleDependency
-    androidTestImplementation("com.squareup.okhttp3:mockwebserver:3.12.13")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     androidTestImplementation("com.github.YarikSOffice:lingver:1.3.0")
-    androidTestUtil 'androidx.test:orchestrator:1.4.1'
+    androidTestUtil 'androidx.test:orchestrator:1.5.1'
 }
 
 
