@@ -10,7 +10,8 @@
 
 
 ### <div align=center>Please add issues or feature requests on github under issues.</div>
-### <div align=center>Download releases here https://github.com/segler-alex/RadioDroid/releases</div>
+### <div align=center>Download releases here https://github.com/fschroffner/radiodroid-revival/releases</div>
+### <div align=center>Or download the latest debug build from <a href="https://github.com/fschroffner/radiodroid-revival/actions/workflows/android-ci.yml">GitHub Actions</a> (artifact: <code>debug-apk</code>)</div>
 
 <div align=center><a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank">
 <img src="http://www.gnu.org/graphics/gplv3-with-text-84x42.png" alt="GPLv3 Logo"/></a></div>

@@ -27,3 +27,9 @@ jobs:
         java-version: 17
     - name: Tests
       run: bash ./gradlew assembleDebug test --stacktrace
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-apk
+        path: app/build/outputs/apk/free/debug/*.apk
+        retention-days: 30
