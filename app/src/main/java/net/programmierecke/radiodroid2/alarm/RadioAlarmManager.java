@@ -228,7 +228,14 @@ public class RadioAlarmManager {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 if(BuildConfig.DEBUG) { Log.d("ALARM","START setAlarmClock"); }
-                alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),alarmIntent),alarmIntent);
+                // On Android 12+ (API 31) SCHEDULE_EXACT_ALARM can be revoked by the user;
+                // fall back to an inexact alarm so the app does not crash.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmMgr.canScheduleExactAlarms()) {
+                    if(BuildConfig.DEBUG) { Log.d("ALARM","no exact-alarm permission, falling back to set()"); }
+                    alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+                } else {
+                    alarmMgr.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(), alarmIntent), alarmIntent);
+                }
             }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 if(BuildConfig.DEBUG) { Log.d("ALARM","START setExact"); }
                 alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);

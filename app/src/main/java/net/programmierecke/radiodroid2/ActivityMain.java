@@ -1,5 +1,6 @@
 package net.programmierecke.radiodroid2;
 
+import android.Manifest;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -106,6 +110,7 @@ public class ActivityMain extends AppCompatActivity implements SearchView.OnQuer
 
     public static final int PERM_REQ_STORAGE_FAV_SAVE = 1;
     public static final int PERM_REQ_STORAGE_FAV_LOAD = 2;
+    public static final int PERM_REQ_NOTIFICATIONS = 3;
 
     // Request code for creating a PDF document.
     private static final int ACTION_SAVE_FILE = 1;
@@ -314,6 +319,14 @@ public class ActivityMain extends AppCompatActivity implements SearchView.OnQuer
         });
 
         ((RadioDroidApp) getApplication()).getCastHandler().onCreate(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    PERM_REQ_NOTIFICATIONS);
+        }
 
         setupStartUpFragment();
     }

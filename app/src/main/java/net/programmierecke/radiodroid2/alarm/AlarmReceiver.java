@@ -1,5 +1,6 @@
 package net.programmierecke.radiodroid2.alarm;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import net.programmierecke.radiodroid2.BuildConfig;
@@ -259,6 +262,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setSound(soundUri)
                 .setAutoCancel(true);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            Log.w(TAG, "POST_NOTIFICATIONS not granted, skipping backup-alarm notification");
+            return;
+        }
         notificationManager.notify(BACKUP_NOTIFICATION_ID, mBuilder.build());
     }
 }
